@@ -1,22 +1,22 @@
-
 import streamlit as st
 import pandas as pd
 import joblib
-import pickle
 
-# Load model and feature names
-model = joblib.load("disease_prediction_model.pkl")
-feature_names = pickle.load(open("feature_names.pkl", "rb"))
+# Load the model
+model = joblib.load('disease_prediction_model.pkl')
 
-st.title("AI-Powered Disease Prediction App")
-st.subheader("Select your symptoms:")
+st.title("AI Disease Prediction App")
 
+# Feature list
+features = ['Age', 'Gender', 'Blood_Pressure', 'Heart_Rate', 'Cholesterol',
+            'Glucose', 'Smoking', 'Alcohol', 'Physical_Activity']
+
+# Create input form
 user_input = {}
-for feature in feature_names:
-    user_input[feature] = st.checkbox(feature.replace("_", " ").capitalize())
+for feature in features:
+    user_input[feature] = st.number_input(f"Enter {feature}", value=0.0)
 
-if st.button("Predict"):
+if st.button("Predict Disease"):
     input_df = pd.DataFrame([user_input])
-    input_df = input_df.reindex(columns=feature_names, fill_value=0)
     prediction = model.predict(input_df)[0]
     st.success(f"Predicted Disease: {prediction}")
